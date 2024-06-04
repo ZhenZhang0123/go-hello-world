@@ -25,13 +25,19 @@ func TestString(t *testing.T) {
 }
 
 func FuzzReverse(f *testing.F) {
-    testcases := []string{"Hello, world", " ", "!12345"}
+    testcases := []string {"Hello, world", " ", "!12345"}
     for _, tc := range testcases {
         f.Add(tc)  // Use f.Add to provide a seed corpus
     }
     f.Fuzz(func(t *testing.T, orig string) {
-        rev := String(orig)
-        doubleRev := String(rev)
+        rev, err1 := ReverseUtf8(orig)
+        if err1 != nil {
+            return
+        }
+        doubleRev, err2 := ReverseUtf8(rev)
+        if err2 != nil {
+             return
+        }
         if orig != doubleRev {
             t.Errorf("Before: %q, after: %q", orig, doubleRev)
         }
